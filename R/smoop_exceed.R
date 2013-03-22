@@ -1,8 +1,8 @@
 #' 
-#' compute exceedence probs from the output of smoop
+#' compute extreme probs from the output of smoop
 #'
 #' @param sv the output from smoop
-#' @param c the critical value for exceedence
+#' @param c the critical value for extremes
 #' @param rhohat the rho-hat value from smoop (usually in the smoop object)
 #' 
 smoop_exceed <- function(sv,c,rhohat=attr(sv,"rhohat")){
