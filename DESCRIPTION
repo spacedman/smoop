@@ -1,10 +1,15 @@
 Package: smoop
 Maintainer: Barry Rowlingson <b.rowlingson@gmail.com>
-Author: Barry Rowlingson
+Author: Ben Taylor, Barry Rowlingson, Peter Diggle
 Version: 1.0
 License: GPL-3
-Title: 
-Description: 
+Title: Smoop, smoothing over population centres
+Description: For any quantity measured at a set of locations with 
+	     associated population sizes at those locations, the 
+	     smoop algorithm computes a smoothing of those quantities.
+	     The value at any location is the average of enough nearby
+	     data points to ensure it is an average from at least a given
+	     population size.
 Requires: FNN,
     sp,
     classInt,

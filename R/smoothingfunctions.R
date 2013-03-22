@@ -1,4 +1,5 @@
-
+## (c) Copyright Lancaster University 2012,2013
+##
 # Peter's suggested kernel function
 kernfun <- function(x){
     if(is.nan(x)){

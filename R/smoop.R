@@ -1,4 +1,6 @@
-##' smoop - smooth over population centres
+##
+## (c) Copyright Lancaster University 2012,2013
+##' ##' smoop - smooth over population centres
 ##'
 ##' Do a spatial smoothing where the baseline ratio is over a minimum population size.
 ##'
