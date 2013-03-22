@@ -1,0 +1,7 @@
+export("<-")
+export("function(coords,data,pop,bounds,M,nx=64,ny=64){")
+export(SmoothIT)
+export(evalsmooth)
+export(evalsx)
+export(getM)
+export(smoop)

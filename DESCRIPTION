@@ -1,0 +1,17 @@
+Package: smoop
+Maintainer: Barry Rowlingson <b.rowlingson@gmail.com>
+Author: Barry Rowlingson
+Version: 1.0
+License: GPL-3
+Title: 
+Description: 
+Requires: FNN,
+    sp,
+    raster
+Suggests:
+    testthat,
+    roxygen2
+Collate:
+    'smoop-package.r'
+    'smoop.R'
+    'smoothingfunctions.R'
