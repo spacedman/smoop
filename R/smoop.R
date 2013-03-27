@@ -15,6 +15,9 @@
 ##' @return a raster stack with values and SEs and something
 ##' @export
 smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernfun){
+  require(raster)
+  require(sp)
+  require(FNN)
   y=model.frame(y,spdata)
   if(ncol(y)!=1){stop("Incorrect model formula for y")}
   y=y[,1]
