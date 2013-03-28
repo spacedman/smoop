@@ -77,7 +77,7 @@ getM <- function(pts,pop,Y,kernel,n=NULL,algorithm,lower,upper){
 ##' @return Matrix with three columns first column is smoothed values on locations pts1, second column is variance and third column is the zscore
 ##' @export
 
-evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="cover_tree",opt=FALSE,check=FALSE){
+evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",opt=FALSE,check=FALSE){
     if (M<0){
         stop("M must be non-negative.")
     }
