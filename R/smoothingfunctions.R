@@ -174,14 +174,17 @@ evalsx <- function(i,x,n,pop,Y,M,kernel,opt){
     idx <- min(which(cs>=M)) #min(which(cs>=M & cd>0))
     stopifnot(idx>=1)
 
-    wix <- sapply(x$nn.dist[i,1:idx]/x$nn.dist[i,idx],kernel)*pop[x$nn.index[i,1:idx]]
+    nni = x$nn.index[i,1:idx]
+    nnd = x$nn.dist[i,1:idx]
+    
+    wix <- sapply(nnd/x$nn.dist[i,idx],kernel)*pop[nni]
     if(length(wix)==1 & isTRUE(all.equal(wix,rep(0,length(wix))))){
-      wix=kernel(0)*pop[x$nn.index[i,1:idx]]
+      wix=kernel(0)*pop[nni]
     }
     
-    wix[x$nn.dist[i,1:idx]==0] <- kernel(0)*pop[x$nn.index[i,1:idx]][x$nn.dist[i,1:idx]==0]
-    sx <- sum(wix*Y[x$nn.index[i,1:idx]])/sum(wix)
-    vx <- sum(wix^2/pop[x$nn.index[i,1:idx]])/(sum(wix)^2)
+    wix[nnd==0] <- kernel(0)*pop[nni][nnd==0]
+    sx <- sum(wix*Y[nni])/sum(wix)
+    vx <- sum(wix^2/pop[nni])/(sum(wix)^2)
     if(!opt){
         return(c(sx,vx))
     }
