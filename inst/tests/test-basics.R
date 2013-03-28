@@ -13,7 +13,10 @@ test_that(
     expect_error(smoop())
     expect_error(smoop(~Count,~N))
     expect_error(smoop(~Count,~N,d)) # M missing
-    smoop(~Count,~N,d,max(d$N)*10,nx=10,ny=10)
+    s=smoop(~Count,~N,d,max(d$N)*10,nx=10,ny=10)
+    expect_equal(sum(values(s[[1]])),983.5537849)
+    expect_equal(sum(values(s[[2]])),15.24603904)
+    expect_equal(sum(values(s[[3]])),-162.9596449)
 ### formula manipulations need wrapping in I()
     expect_error(smoop(~XC+YC,~N,d,max(d$N)*10,nx=10,ny=10))
     expect_error(smoop(~XC,~N+Count,d,max(d$N)*10,nx=10,ny=10))
