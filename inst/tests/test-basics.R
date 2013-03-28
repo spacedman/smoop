@@ -21,6 +21,8 @@ test_that(
     expect_error(smoop(~XC+YC,~N,d,max(d$N)*10,nx=10,ny=10))
     expect_error(smoop(~XC,~N+Count,d,max(d$N)*10,nx=10,ny=10))
     smoop(~I(XC+YC),~N,d,max(d$N)*10,nx=10,ny=10)
+### M toooo big
+    expect_error(smoop(~Count,~N,d,sum(d$N)+100,nx=10,ny=10))
   }
   )
 

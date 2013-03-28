@@ -81,6 +81,9 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
     if (M<0){
         stop("M must be non-negative.")
     }
+    if (M>sum(pop)){
+      stop("M must be smaller than the total population")
+    }
     if(is.null(kernel)){
         kernel <- function(d){return(as.numeric(d<=1))}
     }
