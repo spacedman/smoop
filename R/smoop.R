@@ -44,6 +44,12 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
   
 }
 
+smoopCV <- function(y,n,spdata,M){
+yn = .getYN(y,n,spdata)
+pts=coordinates(spdata)
+evalsmooth(pts,pts,yn$n,yn$y,M,opt=TRUE)
+}
+
 .getYN <- function(y,n,spdata){
   y=model.frame(y,spdata)
   if(ncol(y)!=1){stop("Incorrect model formula for y")}
