@@ -47,7 +47,9 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
 smoopCV <- function(y,n,spdata,M){
 yn = .getYN(y,n,spdata)
 pts=coordinates(spdata)
-evalsmooth(pts,pts,yn$n,yn$y,M,opt=TRUE)
+
+laply(M,function(MM){  evalsmooth(pts,pts,yn$n,yn$y,MM,opt=TRUE)})
+
 }
 
 .getYN <- function(y,n,spdata){
