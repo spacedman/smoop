@@ -176,15 +176,16 @@ evalsx <- function(i,x,n,pop,Y,M,kernel,opt){
 
     nni = x$nn.index[i,1:idx]
     nnd = x$nn.dist[i,1:idx]
+    popi = pop[nni]
     
-    wix <- sapply(nnd/x$nn.dist[i,idx],kernel)*pop[nni]
+    wix <- sapply(nnd/x$nn.dist[i,idx],kernel)*popi
     if(length(wix)==1 & isTRUE(all.equal(wix,rep(0,length(wix))))){
-      wix=kernel(0)*pop[nni]
+      wix=kernel(0)*popi
     }
     
-    wix[nnd==0] <- kernel(0)*pop[nni][nnd==0]
+    wix[nnd==0] <- kernel(0)*popi[nnd==0]
     sx <- sum(wix*Y[nni])/sum(wix)
-    vx <- sum(wix^2/pop[nni])/(sum(wix)^2)
+    vx <- sum(wix^2/popi)/(sum(wix)^2)
     if(!opt){
         return(c(sx,vx))
     }
