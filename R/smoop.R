@@ -18,12 +18,7 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
   require(raster)
   require(sp)
   require(FNN)
-  y=model.frame(y,spdata)
-  if(ncol(y)!=1){stop("Incorrect model formula for y")}
-  y=y[,1]
-  n=model.frame(n,spdata)
-  if(ncol(n)!=1){stop("Incorrect model formula for n")}
-  n=n[,1]
+  yn=.getYN(y,n,spdata)
   box=bbox(bounds)
   xgrid=seq(box[1,1],box[1,2],len=nx)
   ygrid=seq(box[2,1],box[2,2],len=ny)
@@ -36,16 +31,25 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
     gridxy=gridxy[!is.na(xyo),]
   }
 
-  s = evalsmooth(gridxy,coordinates(spdata),n,y,M,kernel=kernel)
+  s = evalsmooth(gridxy,coordinates(spdata),yn$n,yn$y,M,kernel=kernel)
 
   s=data.frame(s)
   coordinates(s) <- gridxy
   gridded(s) <- TRUE
   s=brick(s)
 
-  rhohat=sum(n*y)/sum(n)
+  rhohat=sum(yn$n*yn$y)/sum(yn$n)
   attr(s,"rhohat")=rhohat
   return(s)
   
 }
 
+.getYN <- function(y,n,spdata){
+  y=model.frame(y,spdata)
+  if(ncol(y)!=1){stop("Incorrect model formula for y")}
+  y=y[,1]
+  n=model.frame(n,spdata)
+  if(ncol(n)!=1){stop("Incorrect model formula for n")}
+  n=n[,1]
+  return(list(y=y,n=n))
+}
