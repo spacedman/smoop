@@ -102,18 +102,16 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
   }
     
   if(opt){
-    ans <- lapply(1:dim(pts2)[1],function(i){evalsx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel,opt=opt)})
+    ans <- lapply(1:dim(pts2)[1],function(i){evalsxwix(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)})
     
-                                        #q1 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)*(1+ans[[i]]$wix[1]/sum(ans[[i]]$wix[-1]))})
     q2 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)})
-    retval <- sum(q2^2)# + sum((q1-q2)^2)
+    retval <- sum(q2^2)
     if(is.na(retval)){
       stop("retval is NA")
     }
     return(retval) # cross validation variance
-  }else{
-    ans <- t(sapply(1:dim(pts1)[1],function(i){evalsx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel,opt=opt)}))
-    }
+  }
+  ans <- t(sapply(1:dim(pts1)[1],function(i){evalsxvx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)}))
 
   rhohat <- sum(pop*Y)/sum(pop)
     
@@ -171,7 +169,16 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
 ##' @return ...
 ##' @export
 
-evalsx <- function(i,x,n,pop,Y,M,kernel,opt){
+
+### this is the opt=FALSE case
+evalsxvx = function(i,x,n,pop,Y,M,kernel){
+  sxwix=evalsxwix(i,x,n,pop,Y,M,kernel)
+  vx <- sum(sxwix$wix^2/sxwix$popi)/(sum(sxwix$wix)^2)
+  return(c(sxwix$sx,vx))
+}
+
+### 
+evalsxwix <- function(i,x,n,pop,Y,M,kernel){
     cs <- cumsum(pop[x$nn.index[i,]])
     cd <- cumsum(x$nn.dist[i,])
     idx <- min(which(cs>=M)) #min(which(cs>=M & cd>0))
@@ -188,11 +195,7 @@ evalsx <- function(i,x,n,pop,Y,M,kernel,opt){
     
     wix[nnd==0] <- kernel(0)*popi[nnd==0]
     sx <- sum(wix*Y[nni])/sum(wix)
-    vx <- sum(wix^2/popi)/(sum(wix)^2)
-    if(!opt){
-        return(c(sx,vx))
-    }
-    else{
-        return(list(sx=sx,wix=wix))
-    }
+
+    return(list(sx=sx,wix=wix,popi=popi))
+
 }

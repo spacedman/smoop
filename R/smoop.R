@@ -31,7 +31,7 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
     gridxy=gridxy[!is.na(xyo),]
   }
 
-  s = evalsmooth(gridxy,coordinates(spdata),yn$n,yn$y,M,kernel=kernel)
+  s = evalsmooth(gridxy,coordinates(spdata),yn$n,yn$y,M,kernel=kernel,opt=FALSE)
 
   s=data.frame(s)
   coordinates(s) <- gridxy
