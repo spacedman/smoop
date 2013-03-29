@@ -102,16 +102,18 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
   }
     
   if(opt){
-    ans <- lapply(1:dim(pts2)[1],function(i){evalsxwix(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)})
+    q2 <- sapply(1:dim(pts2)[1],
+                  function(i){Y[i]-evalsxwix(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)$sx})
     
-    q2 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)})
     retval <- sum(q2^2)
     if(is.na(retval)){
       stop("retval is NA")
     }
     return(retval) # cross validation variance
   }
-  ans <- t(sapply(1:dim(pts1)[1],function(i){evalsxvx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)}))
+
+  ans <- t(sapply(1:dim(pts1)[1],
+                  function(i){evalsxvx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)}))
 
   rhohat <- sum(pop*Y)/sum(pop)
     
