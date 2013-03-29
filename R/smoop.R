@@ -43,13 +43,22 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
   return(s)
   
 }
-
+##' smoop cross-validation statistic
+##'
+##' 
+##' @title smoop cross-validation statistic
+##' @param y formula for the variable of interest
+##' @param n formula for the population numbers
+##' @param spdata spatial data frame
+##' @param M minimum population count (vector)
+##' @return vector of CV statistics corresponding to values of M
+##' @author Barry Rowlingson
 smoopCV <- function(y,n,spdata,M){
-yn = .getYN(y,n,spdata)
-pts=coordinates(spdata)
+  yn = .getYN(y,n,spdata)
+  pts=coordinates(spdata)
 
-laply(M,function(MM){  evalsmooth(pts,pts,yn$n,yn$y,MM,opt=TRUE)})
-
+  laply(M,function(MM){  evalsmooth(pts,pts,yn$n,yn$y,MM,opt=TRUE)})
+  
 }
 
 .getYN <- function(y,n,spdata){
