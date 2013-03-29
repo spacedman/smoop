@@ -116,35 +116,9 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
                   function(i){evalsxvx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)}))
 
   rhohat <- sum(pop*Y)/sum(pop)
-    
-  or <- order(pop)
-  opop <- pop[or]
-  oY <- Y[or]
-        
-  prbs <- seq(0.1,1,length.out=min(c(100,floor(length(Y)/10))))    
-  qt <- quantile(opop,prbs) # percentile boundaries
-  ind <- 1 # opop[1] is th 0th quantile of the sample
-  qtct <- 1
-  for (i in 2:length(opop)){
-    if(opop[i]<=qt[qtct]){
-      ind <- c(ind,ind[i-1])
-    }else{
-      qtct <- qtct + 1
-      ind <- c(ind,qtct)
-    }
-  }
-  sk <- sapply(1:100,function(i){var(oY[ind==i])})
-  Nk <- sapply(1:100,function(i){mean(opop[ind==i])})
-  logsk <- log(sk)
-  logNk <- log(Nk)
-  
-  coe <- coefficients(lm(logsk~logNk))
-  sigma2 <- exp(coe[1])
-  if(check){
-    plot(logNk,logsk,xlab="(-1)*log N_k",ylab="log s_k")
-    abline(coe,col="red")
-  } 
-    
+
+  sigma2 <- .findSigma2(Y,pop)
+
   ans[,2] <- sigma2*ans[,2]
   ans <- cbind(ans,(ans[,1]-rhohat)/sqrt(ans[,2]))
   colnames(ans) <- c("sx","vx","zscore")
@@ -200,4 +174,33 @@ evalsxwix <- function(i,x,n,pop,Y,M,kernel){
 
     return(list(sx=sx,wix=wix,popi=popi))
 
+}
+
+
+
+.findSigma2 <- function(Y,pop){
+  or <- order(pop)
+  opop <- pop[or]
+  oY <- Y[or]
+        
+  prbs <- seq(0.1,1,length.out=min(c(100,floor(length(Y)/10))))    
+  qt <- quantile(opop,prbs) # percentile boundaries
+  ind <- 1 # opop[1] is th 0th quantile of the sample
+  qtct <- 1
+  for (i in 2:length(opop)){
+    if(opop[i]<=qt[qtct]){
+      ind <- c(ind,ind[i-1])
+    }else{
+      qtct <- qtct + 1
+      ind <- c(ind,qtct)
+    }
+  }
+  sk <- sapply(1:100,function(i){var(oY[ind==i])})
+  Nk <- sapply(1:100,function(i){mean(opop[ind==i])})
+  logsk <- log(sk)
+  logNk <- log(Nk)
+  
+  coe <- coefficients(lm(logsk~logNk))
+  sigma2 <- exp(coe[1])
+  return(sigma2)
 }
