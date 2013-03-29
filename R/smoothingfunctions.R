@@ -78,82 +78,82 @@ getM <- function(pts,pop,Y,kernel,n=NULL,algorithm,lower,upper){
 ##' @export
 
 evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",opt=FALSE,check=FALSE){
-    if (M<0){
-        stop("M must be non-negative.")
-    }
-    if (M>sum(pop)){
-      stop("M must be smaller than the total population")
-    }
-    if(is.null(kernel)){
-        kernel <- function(d){return(as.numeric(d<=1))}
-    }
-    if(is.null(n)){
-        p <- sort(pop)
-        cp <- cumsum(p)
-        n <- min(which(cp>=M))
-    }
+  require(futile.logger)
+  if (M<0){
+    stop("M must be non-negative.")
+  }
+  if (M>sum(pop)){
+    stop("M must be smaller than the total population")
+  }
+  if(is.null(kernel)){
+    kernel <- function(d){return(as.numeric(d<=1))}
+  }
+  if(is.null(n)){
+    p <- sort(pop)
+    cp <- cumsum(p)
+    n <- min(which(cp>=M))
+    flog.info("Number of nearest neighbours = %d",n)
+  }
     
-    nn <- get.knnx(pts2,pts1,n,algorithm=algorithm)
+  nn <- get.knnx(pts2,pts1,n,algorithm=algorithm)
 
-    if (any(nn$nn.index==-1)){
-        stop("Unable to compute at least one neighbour. Try increasing n.")
-    }
+  if (any(nn$nn.index==-1)){
+    stop("Unable to compute at least one neighbour. Try increasing n.")
+  }
     
-    if(opt){
-        ans <- lapply(1:dim(pts2)[1],function(i){evalsx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel,opt=opt)})
-        
-        #q1 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)*(1+ans[[i]]$wix[1]/sum(ans[[i]]$wix[-1]))})
-        q2 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)})
-        retval <- sum(q2^2)# + sum((q1-q2)^2)
-        if(is.na(retval)){
-          stop("retval is NA")
-        }
-        return(retval) # cross validation variance
+  if(opt){
+    ans <- lapply(1:dim(pts2)[1],function(i){evalsx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel,opt=opt)})
+    
+                                        #q1 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)*(1+ans[[i]]$wix[1]/sum(ans[[i]]$wix[-1]))})
+    q2 <- sapply(1:dim(pts2)[1],function(i){(Y[i]-ans[[i]]$sx)})
+    retval <- sum(q2^2)# + sum((q1-q2)^2)
+    if(is.na(retval)){
+      stop("retval is NA")
     }
-    else{
-        ans <- t(sapply(1:dim(pts1)[1],function(i){evalsx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel,opt=opt)}))
+    return(retval) # cross validation variance
+  }else{
+    ans <- t(sapply(1:dim(pts1)[1],function(i){evalsx(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel,opt=opt)}))
     }
 
-    rhohat <- sum(pop*Y)/sum(pop)
+  rhohat <- sum(pop*Y)/sum(pop)
     
-    or <- order(pop)
-    opop <- pop[or]
-    oY <- Y[or]
+  or <- order(pop)
+  opop <- pop[or]
+  oY <- Y[or]
         
-    prbs <- seq(0.1,1,length.out=min(c(100,floor(length(Y)/10))))    
-    qt <- quantile(opop,prbs) # percentile boundaries
-    ind <- 1 # opop[1] is th 0th quantile of the sample
-    qtct <- 1
-    for (i in 2:length(opop)){
-        if(opop[i]<=qt[qtct]){
-            ind <- c(ind,ind[i-1])
-        }
-        else{
-            qtct <- qtct + 1
-            ind <- c(ind,qtct)
-        }
+  prbs <- seq(0.1,1,length.out=min(c(100,floor(length(Y)/10))))    
+  qt <- quantile(opop,prbs) # percentile boundaries
+  ind <- 1 # opop[1] is th 0th quantile of the sample
+  qtct <- 1
+  for (i in 2:length(opop)){
+    if(opop[i]<=qt[qtct]){
+      ind <- c(ind,ind[i-1])
+    }else{
+      qtct <- qtct + 1
+      ind <- c(ind,qtct)
     }
-    sk <- sapply(1:100,function(i){var(oY[ind==i])})
-    Nk <- sapply(1:100,function(i){mean(opop[ind==i])})
-    logsk <- log(sk)
-    logNk <- log(Nk)
+  }
+  sk <- sapply(1:100,function(i){var(oY[ind==i])})
+  Nk <- sapply(1:100,function(i){mean(opop[ind==i])})
+  logsk <- log(sk)
+  logNk <- log(Nk)
+  
+  coe <- coefficients(lm(logsk~logNk))
+  sigma2 <- exp(coe[1])
+  if(check){
+    plot(logNk,logsk,xlab="(-1)*log N_k",ylab="log s_k")
+    abline(coe,col="red")
+  } 
     
-    coe <- coefficients(lm(logsk~logNk))
-    sigma2 <- exp(coe[1])
-    if(check){
-        plot(logNk,logsk,xlab="(-1)*log N_k",ylab="log s_k")
-        abline(coe,col="red")
-    } 
-    
-    ans[,2] <- sigma2*ans[,2]
-    ans <- cbind(ans,(ans[,1]-rhohat)/sqrt(ans[,2]))
-    colnames(ans) <- c("sx","vx","zscore")
-    attr(ans,"sigma2") <- sigma2
-    attr(ans,"M") <- M
-    if(any(is.nan(ans[,1]))){
-        warning("NaNs in smoothed grid. Try increasing M?")
-    }
-    return(ans)      
+  ans[,2] <- sigma2*ans[,2]
+  ans <- cbind(ans,(ans[,1]-rhohat)/sqrt(ans[,2]))
+  colnames(ans) <- c("sx","vx","zscore")
+  attr(ans,"sigma2") <- sigma2
+  attr(ans,"M") <- M
+  if(any(is.nan(ans[,1]))){
+    warning("NaNs in smoothed grid. Try increasing M?")
+  }
+  return(ans)      
 }  
 
 ##' evalsx function

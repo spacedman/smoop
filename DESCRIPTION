@@ -13,7 +13,8 @@ Description: For any quantity measured at a set of locations with
 Requires: FNN,
     sp,
     classInt,
-    raster
+    raster,
+    futile.logger
 Suggests:
     testthat,
     roxygen2
