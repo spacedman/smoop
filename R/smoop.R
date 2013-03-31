@@ -61,6 +61,15 @@ smoopCV <- function(y,n,spdata,M){
   
 }
 
+
+smoopLooS <- function(y,n,spdata,M,nout=nrow(spdata),j){
+  laply(M,
+        function(MM){
+          smoopLoo(y,n,spdata,MM,nout=nrow(spdata),j)$mssq
+        }
+      )
+}
+
 smoopLoo <- function(y,n,spdata,M,nout=nrow(spdata),j){
   yn = .getYN(y,n,spdata)
   pts = coordinates(spdata)
