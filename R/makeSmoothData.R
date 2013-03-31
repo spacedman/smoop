@@ -21,5 +21,5 @@ makeSmooth <- function(n,scale=0.1,alpha=1,mean=0,nugget=0,variance=1,maxF=1){
   coordinates(d)=~x+y
   d$f = extract(f,coordinates(d))
   d$Count=as.integer(1 + d$N*d$f)
-  d
+  list(pts=d,field=f)
 }
