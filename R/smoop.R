@@ -61,6 +61,24 @@ smoopCV <- function(y,n,spdata,M){
   
 }
 
+smoopLoo <- function(y,n,spdata,M,nout=nrow(spdata),j){
+  yn = .getYN(y,n,spdata)
+  pts = coordinates(spdata)
+  #sx = evalsmooth(pts,pts,yn$n, yn$y, M, opt=TRUE)
+  if(missing(j)){
+    j = sort(sample(nrow(spdata),nout))
+  }
+  sxj = laply(j,
+    function(jj){
+      #evalsxwix(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)$sx
+      evalsmooth(pts[jj,,drop=FALSE],pts[-jj,],yn$n[-jj],yn$y[-jj],M)
+    }
+    )
+  Ysx=data.frame(j=j,y=yn$y[j],sx=sxj[,1])
+  mssq=mean((Ysx$y-Ysx$sx)^2)
+  list(Ysx=Ysx,mssq=mssq)
+}
+
 .getYN <- function(y,n,spdata){
   y=model.frame(y,spdata)
   if(ncol(y)!=1){stop("Incorrect model formula for y")}
