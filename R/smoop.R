@@ -62,15 +62,16 @@ smoopCV <- function(y,n,spdata,M){
 }
 
 
-smoopLooS <- function(y,n,spdata,M,nout=nrow(spdata),j){
+smoopLooS <- function(y,n,spdata,M,nout=nrow(spdata),j,.progress=smoopProgress()){
   laply(M,
         function(MM){
-          smoopLoo(y,n,spdata,MM,nout=nrow(spdata),j)$mssq
-        }
+          smoopLoo(y,n,spdata,MM,nout=nrow(spdata),j,.progress="none")$mssq
+        },
+        .progress=.progress
       )
 }
 
-smoopLoo <- function(y,n,spdata,M,nout=nrow(spdata),j){
+smoopLoo <- function(y,n,spdata,M,nout=nrow(spdata),j,.progress=.smoopProgress()){
   yn = .getYN(y,n,spdata)
   pts = coordinates(spdata)
   #sx = evalsmooth(pts,pts,yn$n, yn$y, M, opt=TRUE)
@@ -81,7 +82,9 @@ smoopLoo <- function(y,n,spdata,M,nout=nrow(spdata),j){
     function(jj){
       #evalsxwix(i,x=nn,n=n,pop=pop,Y=Y,M=M,kernel=kernel)$sx
       evalsmooth(pts[jj,,drop=FALSE],pts[-jj,],yn$n[-jj],yn$y[-jj],M)
-    }
+    },
+    .progress=.progress
+
     )
   Ysx=data.frame(j=j,y=yn$y[j],sx=sxj[,1])
   mssq=mean((Ysx$y-Ysx$sx)^2)

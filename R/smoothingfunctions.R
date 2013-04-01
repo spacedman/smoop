@@ -92,7 +92,7 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
     p <- sort(pop)
     cp <- cumsum(p)
     n <- min(which(cp>=M))
-    flog.info("Number of nearest neighbours = %d",n,name="smoop")
+    flog.debug("Number of nearest neighbours = %d",n,name="smoop")
   }
     
   nn <- get.knnx(pts2,pts1,n,algorithm=algorithm)
