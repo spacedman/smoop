@@ -61,6 +61,27 @@ smoopCV <- function(y,n,spdata,M){
   
 }
 
+smoopCVbi <- function(y,n,spdata,M,.progress=smoopProgress()){
+  yn = .getYN(y,n,spdata)
+  pts = coordinates(spdata)
+
+  np = nrow(spdata)
+  n1 = as.integer(np/2)
+  p1 = sort(sample(np,n1))
+  p2 = (1:np)[-p1]
+
+  ssq = laply(M,
+    function(MM){
+      s1 = yn$y[p1]-evalsmooth(pts[p1,],pts[p2,],yn$n[p2],yn$y[p2],MM)[,1]
+      s2 = yn$y[p2]-evalsmooth(pts[p2,],pts[p1,],yn$n[p1],yn$y[p1],MM)[,1]
+      ssq=sum(s1^2) + sum(s2^2)
+      ssq
+    },
+    .progress=.progress
+    )
+  ssq
+  
+}
 
 smoopLooS <- function(y,n,spdata,M,nout=nrow(spdata),j,.progress=smoopProgress()){
   require(plyr)
