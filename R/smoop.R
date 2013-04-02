@@ -63,6 +63,7 @@ smoopCV <- function(y,n,spdata,M){
 
 
 smoopLooS <- function(y,n,spdata,M,nout=nrow(spdata),j,.progress=smoopProgress()){
+  require(plyr)
   laply(M,
         function(MM){
           smoopLoo(y,n,spdata,MM,nout=nrow(spdata),j,.progress="none")$mssq

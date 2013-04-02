@@ -11,6 +11,7 @@ makeRandom <- function(n){
 
 makeSmooth <- function(n,scale=0.1,alpha=1,mean=0,nugget=0,variance=1,maxF=1){
   require(RandomFields)
+  require(raster)
   x <- seq(0,1,len=50)
   y <- seq(0,1,len=50)
   f <- GaussRF(x=x, y=y, model="stable", grid=TRUE,param=c(mean, variance, nugget, scale, alpha))

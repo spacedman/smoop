@@ -12,8 +12,10 @@ Description: For any quantity measured at a set of locations with
 	     population size.
 Requires: FNN,
     sp,
+    plyr,
     classInt,
     raster,
+    RandomFields,
     futile.logger
 Suggests:
     testthat,
