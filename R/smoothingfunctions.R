@@ -27,7 +27,6 @@ kernfun <- function(x){
 ##' @param upper upper bound for optimiser
 ##' @param algorithm Method for computing k-nearest neighbour. See ?get.nnx
 ##' @return ...
-##' @export
 SmoothIT <- function(pts1,pts2,pop,Y,kernel=NULL,n=NULL,lower,upper,algorithm="cover_tree"){
     Mopt <- getM(pts=pts2,pop=pop,Y=Y,kernel=kernel,n=n,algorithm=algorithm,lower=lower,upper=upper)$minimum
     ans <- evalsmooth(pts1=pts1,pts2=pts2,pop=pop,Y=Y,M=Mopt,n=n,kernel=kernel,algorithm=algorithm,check=TRUE)
@@ -48,7 +47,6 @@ SmoothIT <- function(pts1,pts2,pop,Y,kernel=NULL,n=NULL,lower,upper,algorithm="c
 ##' @param lower lower bound for optimiser 
 ##' @param upper upper bound for optimiser
 ##' @return ...
-##' @export
 
 getM <- function(pts,pop,Y,kernel,n=NULL,algorithm,lower,upper){
   force(lower)
@@ -75,7 +73,6 @@ getM <- function(pts,pop,Y,kernel,n=NULL,algorithm,lower,upper){
 ##' @param algorithm Method for computing k-nearest neighbour. See ?get.nnx
 ##' @param opt Setting opt to TRUE returns the cross validation variance, sum[(Y_j-s^(-j)(x_j))^2], where s^(-j) is the smoothing kernel without data Y_j from GP at x_j 
 ##' @return Matrix with three columns first column is smoothed values on locations pts1, second column is variance and third column is the zscore
-##' @export
 
 evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",opt=FALSE,check=FALSE){
   require(futile.logger)
@@ -143,8 +140,7 @@ evalsmooth <- function(pts1,pts2,pop,Y,M,n=NULL,kernel=NULL,algorithm="kd_tree",
 ##' @param kernel Smoothing  kernel function. A function that takes a single argument, d, and returns a single numeric.
 ##' @param opt whether or not in optimisation mode see optim parameter in function evalsmooth
 ##' @return ...
-##' @export
-
+##' 
 
 ### this is the opt=FALSE case
 evalsxvx = function(i,x,n,pop,Y,M,kernel){

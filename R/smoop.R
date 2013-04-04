@@ -52,6 +52,7 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
 ##' @param spdata spatial data frame
 ##' @param M minimum population count (vector)
 ##' @return vector of CV statistics corresponding to values of M
+##' @export
 ##' @author Barry Rowlingson
 smoopCV <- function(y,n,spdata,M){
   yn = .getYN(y,n,spdata)
@@ -60,6 +61,19 @@ smoopCV <- function(y,n,spdata,M){
   laply(M,function(MM){  evalsmooth(pts,pts,yn$n,yn$y,MM,opt=TRUE)})
   
 }
+##' Cross validation by bisection
+##'
+##' Divide data into two parts, fit with one, compute error with the other
+##' and do the same the other way round
+##' @title Cross Validation
+##' @param y formula for the variable of interest
+##' @param n formula for the population numbers
+##' @param spdata spatial data frame 
+##' @param M vector of smoothing constants
+##' @param .progress progress indicator
+##' @return vector of sum of squared differences
+##' @export
+##' @author Barry Rowlingson
 
 smoopCVbi <- function(y,n,spdata,M,.progress=smoopProgress()){
   yn = .getYN(y,n,spdata)

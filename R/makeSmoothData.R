@@ -1,3 +1,11 @@
+##' Make some random data
+##'
+##' Completely random data
+##' @title Random data
+##' @param n number of points
+##' @return Spatial points data frame with p, Count, and N values
+##' @export
+##' @author Barry Rowlingson
 makeRandom <- function(n){
   d=data.frame(x=runif(n),
     y=runif(n),
@@ -8,7 +16,22 @@ makeRandom <- function(n){
   coordinates(d)=~x+y
   d
 }
-
+##' Make some random data from a smooth
+##'
+##' Use RandomFields to create a smooth surface with given parameters,
+##' then create some point data samples from it
+##' 
+##' @title Random data
+##' @param n number of points
+##' @param scale scale factor for GaussRF
+##' @param alpha alpha for GaussRF
+##' @param mean mean of GaussRF
+##' @param nugget nugget for GaussRF
+##' @param variance variance of GaussRF
+##' @param maxF scale factor for field
+##' @return list of pts (data points) and field (raster field object)
+##' @export
+##' @author Barry Rowlingson
 makeSmooth <- function(n,scale=0.1,alpha=1,mean=0,nugget=0,variance=1,maxF=1){
   require(RandomFields)
   require(raster)
