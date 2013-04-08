@@ -76,6 +76,7 @@ smoopCV <- function(y,n,spdata,M){
 ##' @author Barry Rowlingson
 
 smoopCVbi <- function(y,n,spdata,M,.progress=smoopProgress()){
+  require(plyr)
   yn = .getYN(y,n,spdata)
   pts = coordinates(spdata)
 

@@ -41,7 +41,7 @@ makeSmooth <- function(n,scale=0.1,alpha=1,mean=0,nugget=0,variance=1,maxF=1){
   f <- maxF*(f-min(f))/(max(f)-min(f))
   f <- raster(list(x=x,y=y,z=f))
   d <- data.frame(x=runif(n),y=runif(n),
-    N=100)
+    N=as.integer(runif(n,100,150)))
   coordinates(d)=~x+y
   d$f = extract(f,coordinates(d))
   d$Count=as.integer(1 + d$N*d$f)
