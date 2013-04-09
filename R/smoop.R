@@ -98,6 +98,12 @@ smoopCVbi <- function(y,n,spdata,M,.progress=smoopProgress()){
   
 }
 
+smoopCVbiN <- function(N,y,n,spdata,M,.progress=smoopProgress()){
+  m = laply(1:N,function(i)smoopCVbi(y,n,spdata,M,.progress="none"),.progress=.progress)
+  s = apply(m,1,mean)
+  laply(1:N,function(i){m[i,]-s[i]})
+}
+
 smoopLooS <- function(y,n,spdata,M,nout=nrow(spdata),j,.progress=smoopProgress()){
   require(plyr)
   laply(M,
