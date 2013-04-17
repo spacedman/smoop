@@ -43,7 +43,25 @@ smoop <- function(y,n,spdata,M,bounds=spdata,clip=FALSE,nx=64,ny=64,kernel=kernf
   return(s)
   
 }
-##' smoop cross-validation statistic
+
+smoop1d <- function(y, n, x, M, bounds=range(x, na.rm=TRUE), nx=64, kernel=kernfun){
+ xgrid=seq(min(bounds,na.rm=TRUE),max(bounds,na.rm=TRUE),len=nx)
+ ygrid = 0
+ gridxy = expand.grid(x=xgrid,y=ygrid)
+ s = evalsmooth(gridxy,cbind(x,0),n,y,M,kernel=kernel,opt=FALSE)
+ s = data.frame(s)
+ s$x = xgrid
+ s
+}
+
+smoopCVbiOneD <- function(N, y, n, x, M, .progress=smoopProgress()){
+  spd = data.frame(y=y,n=n, xc=x)
+  spd$yc = 0
+  coordinates(spd) <- ~xc+yc
+  smoopCVbiN(N, ~y, ~n, spd, M, .progress=.progress)
+}
+
+##' ##' smoop cross-validation statistic
 ##'
 ##' 
 ##' @title smoop cross-validation statistic
